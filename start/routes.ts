@@ -22,4 +22,6 @@ import Route from '@ioc:Adonis/Core/Route'
 
 Route.group(() => {
   Route.get('/health_check', "HealthCheckController.healthCheck")
+  Route.post("/register", "AuthController.register")
+  Route.post("/login", "AuthController.login")
 }).prefix("/api/v1")
