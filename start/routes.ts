@@ -24,5 +24,8 @@ Route.group(() => {
   Route.get('/health_check', "HealthCheckController.healthCheck")
   Route.post("/register", "AuthController.register")
   Route.post("/login", "AuthController.login")
-  Route.post("/logout", "AuthController.logout")
+
+  Route.group(() => {
+    Route.post("/logout", "AuthController.logout")
+  }).middleware(["auth"])
 }).prefix("/api/v1")

@@ -66,6 +66,7 @@ export default class AuthController {
     }
 
     public async logout({ auth, response }) {
+        // only accessible behind auth middleware
         await auth.use('api').revoke();
         return response.ok({
             status: "success",
