@@ -9,7 +9,7 @@ export default class extends BaseSchema {
       table.integer("user_id").notNullable().references("users.id").onDelete("CASCADE")
 
       table.string("email").unique().notNullable()
-      table.uuid("verfication_token").index().unique().notNullable()
+      table.uuid("verification_token").index().unique().notNullable()
       table.timestamp("verfied_at", { useTz: true })
 
       /**

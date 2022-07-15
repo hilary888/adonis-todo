@@ -29,7 +29,8 @@ export default class LoginUserValidator {
     ]),
     password: schema.string({}, [
       rules.minLength(10)
-    ])
+    ]),
+    rememberMeToken: schema.boolean.optional()
   })
 
   /**
