@@ -28,9 +28,13 @@ export default class AuthController {
                 status: "success",
                 data: token,
             }
-            response.ok(responseData);
+            return response.ok(responseData);
         } catch {
-            return response.unauthorized("Invalid credentials");
+            const errorResponse = {
+                status: "fail",
+                message: "Invalid credentials"
+            }
+            return response.unauthorized(errorResponse);
         }
     }
 }
