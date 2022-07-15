@@ -12,8 +12,11 @@ export default class AuthController {
         // Create new user
         const user = await User.create(payload);
 
-        response.created()
-        return user;
+        const responseData = {
+            status: "success",
+            data: user.serialize()
+        };
+        response.created(responseData);
     }
 
     public async login({ auth, request, response }: HttpContextContract) {
