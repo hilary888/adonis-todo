@@ -1,5 +1,4 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Database from '@ioc:Adonis/Lucid/Database';
 import EmailVerificationToken from 'App/Models/EmailVerificationToken';
 import User from 'App/Models/User';
 import CreateUserValidator from 'App/Validators/CreateUserValidator';
@@ -64,5 +63,13 @@ export default class AuthController {
             }
             return response.unauthorized(errorResponse);
         }
+    }
+
+    public async logout({ auth, response }) {
+        await auth.use('api').revoke();
+        return response.ok({
+            status: "success",
+            revoked: true
+        });
     }
 }
