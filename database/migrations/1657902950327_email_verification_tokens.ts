@@ -10,7 +10,8 @@ export default class extends BaseSchema {
 
       table.string("email").unique().notNullable()
       table.uuid("verification_token").index().unique().notNullable()
-      table.timestamp("verfied_at", { useTz: true })
+      table.boolean("is_verified").defaultTo(false)
+      table.timestamp("verified_at", { useTz: true })
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

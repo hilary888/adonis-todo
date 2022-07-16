@@ -24,6 +24,7 @@ Route.group(() => {
   Route.get('/health_check', "HealthCheckController.healthCheck")
   Route.post("/register", "AuthController.register")
   Route.post("/login", "AuthController.login")
+  Route.post("/verify_email", "AuthController.verifyEmail")
 
   Route.group(() => {
     Route.post("/logout", "AuthController.logout")

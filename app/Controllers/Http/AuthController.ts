@@ -2,7 +2,9 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import EmailVerificationToken from 'App/Models/EmailVerificationToken';
 import User from 'App/Models/User';
 import CreateUserValidator from 'App/Validators/CreateUserValidator';
+import EmailVerificationTokenValidator from 'App/Validators/EmailVerificationTokenValidator';
 import LoginUserValidator from 'App/Validators/LoginUserValidator';
+import { DateTime } from 'luxon';
 import { v4 as uuidv4 } from 'uuid';
 
 
@@ -72,5 +74,43 @@ export default class AuthController {
             status: "success",
             revoked: true
         });
+    }
+
+    public async verifyEmail({ request, response }) {
+        const { email, verificationToken } = await request.validate(EmailVerificationTokenValidator);
+        let emailVerificationTokenRecord: EmailVerificationToken;
+
+        // Find email verification token record
+        try {
+            emailVerificationTokenRecord = await EmailVerificationToken.findByOrFail("email", email);
+        } catch (error) {
+            const responseData = {
+                status: "fail",
+                message: error
+            };
+            return response.notFound(responseData);
+        }
+
+        // Check if provided token matches saved token
+        const isValid = (verificationToken === emailVerificationTokenRecord.verificationToken) &&
+            (emailVerificationTokenRecord !== undefined);
+        if (!isValid) {
+            return response.badRequest({
+                status: "fail",
+                message: "email verification failed due to invalid token"
+            });
+        }
+
+        // Update record 
+        emailVerificationTokenRecord.isVerified = true;
+        emailVerificationTokenRecord.verifiedAt = DateTime.now();
+        const verifiedEmail = await emailVerificationTokenRecord.save();
+
+        const responseData = {
+            status: "success",
+            data: verifiedEmail
+        }
+
+        return response.ok(responseData);
     }
 }
