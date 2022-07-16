@@ -5,6 +5,7 @@ import User from 'App/Models/User';
 import CreateUserValidator from 'App/Validators/CreateUserValidator';
 import EmailVerificationTokenValidator from 'App/Validators/EmailVerificationTokenValidator';
 import LoginUserValidator from 'App/Validators/LoginUserValidator';
+import ResetPasswordValidator from 'App/Validators/ResetPasswordValidator';
 import { DateTime } from 'luxon';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -87,7 +88,7 @@ export default class AuthController {
         } catch (error) {
             const responseData = {
                 status: "fail",
-                message: error
+                message: error.message
             };
             return response.notFound(responseData);
         }
@@ -116,9 +117,6 @@ export default class AuthController {
     }
 
     public async forgotPassword({ request, response }) {
-        // Get email address from qs
-        // Create entry in password reset tokens table
-        // notify user of result
         const { email } = request.qs()
         let user: User;
         try {
@@ -126,10 +124,9 @@ export default class AuthController {
         } catch (error) {
             return response.notFound({
                 status: "fail",
-                message: error
+                message: error.message
             });
         }
-
 
         const passwordResetTokenEntry = {
             userId: user.id,
@@ -147,9 +144,37 @@ export default class AuthController {
     }
 
     public async resetPassword({ request, response }) {
-        // Get reset token, new password from body
-        // Get db record using token
-        // if entry exists, update related user's password
+        // Enable user reset password
+        const { token, newPassword } = await request.validate(ResetPasswordValidator);
 
+        let passwordResetTokenRecord: PasswordResetToken;
+        let user: User;
+
+        try {
+            passwordResetTokenRecord = await PasswordResetToken
+                .findByOrFail("token", token);
+        } catch (error) {
+            return response.notFound({
+                status: "fail",
+                message: error.message
+            });
+        }
+
+        try {
+            user = await User.findOrFail(passwordResetTokenRecord.userId);
+        } catch (error) {
+            return response.badRequest({
+                status: "fail",
+                message: error.message
+            })
+        }
+
+        user.password = newPassword;
+        await user.save();
+
+        return response.ok({
+            status: "success",
+            data: { newPasswordSet: user.$isPersisted }
+        })
     }
 }
