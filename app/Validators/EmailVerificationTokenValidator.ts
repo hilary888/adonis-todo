@@ -1,8 +1,8 @@
-import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
-import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { schema, CustomMessages, rules } from "@ioc:Adonis/Core/Validator";
+import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 
 export default class EmailVerificationTokenValidator {
-  constructor(protected ctx: HttpContextContract) { }
+  constructor(protected ctx: HttpContextContract) {}
 
   /*
    * Define schema to validate the "shape", "type", "formatting" and "integrity" of data.
@@ -24,13 +24,9 @@ export default class EmailVerificationTokenValidator {
    *    ```
    */
   public schema = schema.create({
-    email: schema.string({ trim: true }, [
-      rules.email()
-    ]),
-    verificationToken: schema.string({}, [
-      rules.uuid()
-    ])
-  })
+    email: schema.string({ trim: true }, [rules.email()]),
+    verificationToken: schema.string({}, [rules.uuid()]),
+  });
 
   /**
    * Custom messages for validation failures. You can make use of dot notation `(.)`
@@ -43,5 +39,5 @@ export default class EmailVerificationTokenValidator {
    * }
    *
    */
-  public messages: CustomMessages = {}
+  public messages: CustomMessages = {};
 }

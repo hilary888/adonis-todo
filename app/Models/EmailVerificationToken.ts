@@ -1,32 +1,32 @@
-import { DateTime } from 'luxon'
-import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
-import User from './User'
+import { DateTime } from "luxon";
+import { BaseModel, BelongsTo, belongsTo, column } from "@ioc:Adonis/Lucid/Orm";
+import User from "./User";
 
 export default class EmailVerificationToken extends BaseModel {
   @column({ isPrimary: true })
-  public id: number
+  public id: number;
 
   @column()
-  public userId: number
+  public userId: number;
 
   @column()
-  public email: string
+  public email: string;
 
   @column()
-  public isVerified: boolean
+  public isVerified: boolean;
 
   @column()
-  public verificationToken: string
+  public verificationToken: string;
 
   @column.dateTime()
-  public verifiedAt?: DateTime
+  public verifiedAt?: DateTime;
 
   @column.dateTime({ autoCreate: true })
-  public createdAt: DateTime
+  public createdAt: DateTime;
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  public updatedAt: DateTime
+  public updatedAt: DateTime;
 
   @belongsTo(() => User)
-  public user: BelongsTo<typeof User>
+  public user: BelongsTo<typeof User>;
 }

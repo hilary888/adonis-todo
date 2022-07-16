@@ -1,19 +1,19 @@
-import BaseSchema from '@ioc:Adonis/Lucid/Schema'
+import BaseSchema from "@ioc:Adonis/Lucid/Schema";
 
 export default class extends BaseSchema {
-  protected tableName = 'users'
+  protected tableName = "users";
 
   public async up() {
     this.schema.alterTable(this.tableName, (table) => {
-      table.unique(["email"])
-      table.string("username", 255).notNullable().unique()
-    })
+      table.unique(["email"]);
+      table.string("username", 255).notNullable().unique();
+    });
   }
 
   public async down() {
     this.schema.alterTable(this.tableName, (table) => {
-      table.dropUnique([], "users_email_unique")
-      table.dropColumn("username")
-    })
+      table.dropUnique([], "users_email_unique");
+      table.dropColumn("username");
+    });
   }
 }

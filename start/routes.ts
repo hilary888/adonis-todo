@@ -18,21 +18,21 @@
 |
 */
 
-import Route from '@ioc:Adonis/Core/Route'
+import Route from "@ioc:Adonis/Core/Route";
 
 Route.group(() => {
-  Route.get('/health_check', "HealthCheckController.healthCheck")
-  Route.post("/register", "AuthController.register")
-  Route.post("/login", "AuthController.login")
-  Route.post("/verify_email", "AuthController.verifyEmail")
-  Route.get("/forgot_password", "AuthController.forgotPassword")
-  Route.post("/reset_password", "AuthController.resetPassword")
+  Route.get("/health_check", "HealthCheckController.healthCheck");
+  Route.post("/register", "AuthController.register");
+  Route.post("/login", "AuthController.login");
+  Route.post("/verify_email", "AuthController.verifyEmail");
+  Route.get("/forgot_password", "AuthController.forgotPassword");
+  Route.post("/reset_password", "AuthController.resetPassword");
 
   Route.group(() => {
-    Route.post("/logout", "AuthController.logout")
-    Route.get("/todos", "TodosController.getTodos")
-    Route.put("/todos/:id", "TodosController.updateTodo")
-    Route.delete("/todos/:id", "TodosController.deleteTodo")
-    Route.post("/todos", "TodosController.createTodo")
-  }).middleware(["auth"])
-}).prefix("/api/v1")
+    Route.post("/logout", "AuthController.logout");
+    Route.get("/todos", "TodosController.getTodos");
+    Route.put("/todos/:id", "TodosController.updateTodo");
+    Route.delete("/todos/:id", "TodosController.deleteTodo");
+    Route.post("/todos", "TodosController.createTodo");
+  }).middleware(["auth"]);
+}).prefix("/api/v1");

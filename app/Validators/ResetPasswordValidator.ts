@@ -1,8 +1,8 @@
-import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
-import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { schema, CustomMessages, rules } from "@ioc:Adonis/Core/Validator";
+import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 
 export default class ResetPasswordValidator {
-  constructor(protected ctx: HttpContextContract) { }
+  constructor(protected ctx: HttpContextContract) {}
 
   /*
    * Define schema to validate the "shape", "type", "formatting" and "integrity" of data.
@@ -24,14 +24,9 @@ export default class ResetPasswordValidator {
    *    ```
    */
   public schema = schema.create({
-    token: schema.string({}, [
-      rules.uuid()
-    ]),
-    newPassword: schema.string({}, [
-      rules.confirmed(),
-      rules.minLength(10)
-    ])
-  })
+    token: schema.string({}, [rules.uuid()]),
+    newPassword: schema.string({}, [rules.confirmed(), rules.minLength(10)]),
+  });
 
   /**
    * Custom messages for validation failures. You can make use of dot notation `(.)`
@@ -44,5 +39,5 @@ export default class ResetPasswordValidator {
    * }
    *
    */
-  public messages: CustomMessages = {}
+  public messages: CustomMessages = {};
 }
