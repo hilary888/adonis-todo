@@ -30,5 +30,9 @@ Route.group(() => {
 
   Route.group(() => {
     Route.post("/logout", "AuthController.logout")
+    Route.get("/todos", "TodosController.getTodos")
+    Route.put("/todos/:id", "TodosController.updateTodo")
+    Route.delete("/todos/:id", "TodosController.deleteTodo")
+    Route.post("/todos", "TodosController.createTodo")
   }).middleware(["auth"])
 }).prefix("/api/v1")

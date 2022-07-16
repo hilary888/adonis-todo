@@ -24,8 +24,11 @@ export default class AuthController {
             email: user.email,
             verificationToken: uuidv4()
         };
+
+        let emailVerificationToken: EmailVerificationToken;
         try {
-            await EmailVerificationToken.create(emailVerificationObject);
+            emailVerificationToken = await EmailVerificationToken.create(emailVerificationObject);
+            // TODO: send mail container verification details here
         } catch (error) {
             // If emailVerificationToken save fails, rollback user save
             const failedUser = await User.find(user.id);
