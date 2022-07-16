@@ -1,5 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import EmailVerificationToken from 'App/Models/EmailVerificationToken';
+import PasswordResetToken from 'App/Models/PasswordResetToken';
 import User from 'App/Models/User';
 import CreateUserValidator from 'App/Validators/CreateUserValidator';
 import EmailVerificationTokenValidator from 'App/Validators/EmailVerificationTokenValidator';
@@ -112,5 +113,43 @@ export default class AuthController {
         }
 
         return response.ok(responseData);
+    }
+
+    public async forgotPassword({ request, response }) {
+        // Get email address from qs
+        // Create entry in password reset tokens table
+        // notify user of result
+        const { email } = request.qs()
+        let user: User;
+        try {
+            user = await User.findByOrFail("email", email);
+        } catch (error) {
+            return response.notFound({
+                status: "fail",
+                message: error
+            });
+        }
+
+
+        const passwordResetTokenEntry = {
+            userId: user.id,
+            token: uuidv4()
+        };
+
+        const result = PasswordResetToken.create(passwordResetTokenEntry);
+
+        return response.ok({
+            status: "success",
+            data: (await result).$isPersisted
+        })
+
+
+    }
+
+    public async resetPassword({ request, response }) {
+        // Get reset token, new password from body
+        // Get db record using token
+        // if entry exists, update related user's password
+
     }
 }
