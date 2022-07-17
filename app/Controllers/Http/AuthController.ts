@@ -1,4 +1,5 @@
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
+import Database from "@ioc:Adonis/Lucid/Database";
 import EmailVerificationToken from "App/Models/EmailVerificationToken";
 import PasswordResetToken from "App/Models/PasswordResetToken";
 import User from "App/Models/User";
@@ -14,38 +15,24 @@ export default class AuthController {
     // Validate request payload
     const payload = await request.validate(CreateUserValidator);
 
-    // Create new user
-    const user = await User.create(payload); // consider using a transaction instead
+    const trxResult = await Database.transaction(async (trx) => {
+      const user = await User.create(payload, { client: trx });
+      const token = await user.related("emailVerificationTokens").create({
+        userId: user.id,
+        email: user.email,
+        verificationToken: uuidv4(),
+      }, { client: trx })
 
-    // Make entry into email verification token table
-    const emailVerificationObject = {
-      userId: user.id,
-      email: user.email,
-      verificationToken: uuidv4(),
-    };
+      return {
+        user: user,
+        token: token,
+      };
+    });
 
-    try {
-      await EmailVerificationToken.create(emailVerificationObject);
-      // TODO: send mail container verification details here
-    } catch (error) {
-      // If emailVerificationToken save fails, rollback user save
-      const failedUser = await User.find(user.id);
-      if (failedUser !== null) {
-        failedUser.delete();
-      }
-
-      return response.badRequest({
-        status: "fail",
-        message: error,
-      });
-    }
-
-    const responseData = {
+    return response.created({
       status: "success",
-      data: user.serialize(),
-    };
-    console.log("hey");
-    response.created(responseData);
+      data: trxResult.user.serialize(),
+    });
   }
 
   public async login({ auth, request, response }: HttpContextContract) {
